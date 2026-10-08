@@ -111,12 +111,12 @@ M_{\mathcal F}(a)
   \sum_{j=1}^m|a_{n_j}-a_{n_{j-1}}|.
 ```
 
-The key estimate, for $`r,L>0`$, $`K=D_rE`$ or $`D_rO`$, and inputs supported in
+The key estimate **(1)**, for $`r,L>0`$, $`K=D_rE`$ or $`D_rO`$, and inputs supported in
 $`Q_L=[-L,L]^2`$, is
 
 ```math
 \int_{\mathbb R^2}M_{\mathcal F}(\mathcal A^K(F,G))(p)\,dp
-\le |Q_L|\,C_K\|F\|_\infty\|G\|_\infty\sqrt m.\tag{1}
+\le |Q_L|\,C_K\|F\|_\infty\|G\|_\infty\sqrt{m}.
 ```
 
 The bound is uniform over the finite family. Keeping the maximum inside the
@@ -124,7 +124,7 @@ integral allows the maximizing chain to depend on the spatial point.
 
 **2. Matrix energy and Gaussian derivatives supply (1).** On a finite grid,
 the proof represents three inputs by Gaussian-weighted matrices and uses the
-energy $`\Phi(P)=\operatorname{tr}(P^{3/2})`$. A mixed trace inequality
+energy $`\Phi(P)=\mathrm{tr}(P^{3/2})`$. A mixed trace inequality
 controls cyclic products by quadratic insertion costs. Gaussian heat
 identities turn these costs into dissipation of the matrix energy.
 
