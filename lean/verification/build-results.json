@@ -1,0 +1,39 @@
+{
+  "format": "compact-publication-proof-v1",
+  "passed": true,
+  "completed_at_jst": "2026-10-08T22:20:17.855430+09:00",
+  "toolchain": "leanprover/lean4:v4.33.1",
+  "mathlib_revision": "0df444a360eaa60ab8c11dca51a86af692955474",
+  "single_file_modules": 334,
+  "source_files": {
+    "CommutingConvergence.lean": "f5750f2dce2e2f01d1297bb838dce8c1ca940bc170bfd6de9e83ada8c6a482a3",
+    "verification/Axioms.lean": "831d3d0882d57c958a973bb9fd7f24a297e4377d3a6902c69e267ba6db27954e",
+    "verification/FCTargetProofs.lean": "08ff135600040937b913fb81373e7783aecd0cb7a4a4bc4e5a895d7177090b02"
+  },
+  "public_declarations_audited": 2095,
+  "additional_complete_target_axiom_reports": {
+    "CommutingConvergence.commutingPointwiseConvergence": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "CommutingConvergence.commutingPointwiseConvergenceL2": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "allowed_axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "fresh_complete_target_audit": true,
+  "fresh_all_public_declarations_audit": true,
+  "full_audit_log_sha256": "fff9934d71d0f4fb5c108f542a9f7e4e8fbf584acc167206d1bfe32adef6aa1b",
+  "target_audit_log_sha256": "10f57f0f2feee78fbf1c3455e16a88d1193ab5ef50fdd50cc19d9c87e0baf4d5",
+  "core_compile_log_sha256": "8cb95c9846889f5ad8805335a015c0a43a9d2d8f4a5ed09dfff67a61f6c768d6",
+  "original_modular_independent_source_modules": 4110,
+  "original_independent_receipt_sha256": "f7bbd4448a55f03b337bf6bc9572270e517c7bfc2a80a36ba60a47a2156e3e47",
+  "FC_statement_placeholders_certified_as_proofs": false
+}

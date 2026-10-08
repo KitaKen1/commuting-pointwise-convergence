@@ -1,0 +1,897 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=26mm]{geometry}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem*{conjecture}{Conjecture}
+
+% Frame statements while keeping proofs in the ordinary text flow.
+\newsavebox{\statementbox}
+\newenvironment{statementframe}
+  {\par\addvspace{4pt}\noindent
+   \setlength{\fboxsep}{6pt}\setlength{\fboxrule}{0.45pt}%
+   \begin{lrbox}{\statementbox}%
+   \begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}}
+  {\end{minipage}\end{lrbox}%
+   \fbox{\usebox{\statementbox}}\par\addvspace{4pt}}
+\newcommand{\R}{\mathbb R}
+\newcommand{\C}{\mathbb C}
+\newcommand{\1}{\mathbf1}
+\newcommand{\A}{\mathcal A}
+\newcommand{\F}{\mathcal F}
+\newcommand{\E}{\mathbb E}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{3pt}
+\setlength{\emergencystretch}{2em}
+\title{Pointwise Convergence for Two\\ Commuting Transformations\\[5pt]
+\large Revised proof manuscript with traceable inputs}
+\author{}
+\date{October 8, 2026}
+\begin{document}
+\maketitle
+\vspace{-2.4em}
+\begin{abstract}
+We present a proof argument for pointwise convergence of bilinear
+averages associated with two commuting invertible measure-preserving
+transformations. Finite-matrix and heat-flow lemmas yield a smooth
+kernel estimate through higher Gaussian derivatives and an entrywise
+switching argument. A planar maximal estimate, spatial transference,
+closure in the kernel's $L^1$ norm, and exact phase reconstruction then
+give convergence for bounded functions. Truncation extends the
+conclusion to $L^2\times L^2$. This is a proof manuscript for review;
+the qualitative main theorem now has a compiled Lean formalization.
+The formal statements, their standard axiom audit, and the scope of the
+formalization are recorded in Appendix~\ref{app:formal}.
+Independent mathematical review and the separate full dependency-source
+rebuild remain distinct validation steps.
+\end{abstract}
+
+\section{Main statement and planar estimate}
+
+Let $(X,\mathcal B,\mu)$ be a probability space. Let $T,S$ be invertible,
+measurable, measure-preserving transformations with measurable inverses
+and $TS=ST$. For measurable complex-valued functions $f,g$ and $N\ge1$, put
+\[
+ A_N(f,g)(x)=\frac1N\sum_{n=0}^{N-1} f(T^nx)g(S^nx).
+\]
+\begin{statementframe}
+\begin{conjecture}
+For every such system and every $f,g\in L^\infty(\mu)$, the sequence
+$A_N(f,g)(x)$ converges for $\mu$-almost every $x$.
+\end{conjecture}
+\end{statementframe}
+The framed conjecture records the question being addressed.
+Theorem~\ref{thm:main} is the conclusion proved below.
+All convergence assertions are almost everywhere, for each fixed pair of
+inputs; they do not assert convergence at every point or simultaneously
+for every equivalence class.
+
+Set
+\[
+ \varphi(t)=(2\pi)^{-1/2}e^{-t^2/2},\qquad
+ E(t)=(3-t^2)\varphi(t),\qquad O(t)=(3t-t^3)\varphi(t),
+\]
+and write $D_rK(t)=r^{-1}K(t/r)$ for $r>0$. For $K\in L^1(\R)$ and
+bounded measurable $F,G:\R^2\to\C$, define
+\[
+ \A_N^K(F,G)(u,v)=\int_\R K(t)F(u+Nt,v)G(u,v+Nt)\,dt.
+\]
+An $m$-chain is a tuple $\boldsymbol n=(n_0,\ldots,n_m)$ of positive
+integers with $n_0<\cdots<n_m$. For a sequence $a=(a_N)$ set
+\[
+ V_{\boldsymbol n}(a)=\sum_{j=1}^m |a_{n_j}-a_{n_{j-1}}|,
+ \qquad M_{\F}(a)=\max_{\boldsymbol n\in\F}V_{\boldsymbol n}(a),
+\]
+where $\F$ is a finite nonempty family of $m$-chains. Let
+$Q_L=[-L,L]^2$, with $|Q_L|=4L^2$.
+
+\begin{statementframe}
+\begin{proposition}[Planar finite maximal estimate]\label{prop:planar}
+For each $K\in\{D_rE,D_rO:r>0\}$ and $C_f,C_g\ge0$, there are finite
+numbers $C_m\ge0$, $m\ge1$, such that $C_m/m\to0$ and
+\begin{equation}\label{eq:H}
+ \int_{\R^2} M_{\F}\bigl((\A_N^K(F,G)(p))_{N\ge1}\bigr)\,dp
+ \le |Q_L|C_m
+\end{equation}
+for every $L>0$, every bounded measurable $F,G$ vanishing outside $Q_L$
+with $|F|\le C_f$, $|G|\le C_g$, and every finite nonempty family $\F$
+of $m$-chains. The sequence $(C_m)$ is independent of $L,F,G,\F$.
+\end{proposition}
+\end{statementframe}
+\begin{proof}
+Proposition~\ref{prop:smooth} establishes the smooth kernel estimate
+from the finite-matrix and heat-flow lemmas stated in
+Section~\ref{sec:analytic}. Lemma~\ref{lem:smooth-to-H} converts that
+estimate into \eqref{eq:H}, with $C_m=C_\kappa C_fC_g\sqrt m$ for
+$K=D_r\kappa$, $\kappa=E,O$. In particular $C_m/m\to0$.
+\end{proof}
+
+The maximum in \eqref{eq:H} is inside the integral. The proof therefore
+requires an estimate uniform over output-dependent choices of chains,
+as supplied by the switching argument in Section~\ref{sec:analytic}.
+
+\begin{statementframe}
+\begin{theorem}\label{thm:main}
+For every probability space and pair $T,S$ as above,
+and every $f,g\in L^2(\mu)$, the sequence $A_N(f,g)$ converges almost
+everywhere. In particular, the conclusion holds for
+$f,g\in L^\infty(\mu)$ and for $f,g\in L^3(\mu)$.
+\end{theorem}
+\end{statementframe}
+
+We prove this theorem below. Throughout, representatives may be chosen
+measurable; a bounded equivalence class may be represented by a function
+bounded everywhere. Changing representatives does not affect the discrete
+averages outside the countable union of the inverse images of their
+exceptional sets under $T^n$ and $S^n$.
+
+\section{The analytic estimate}\label{sec:analytic}
+
+We use the finite-matrix and heat-flow lemmas stated below, with
+their proofs in the frozen source of \cite{FrozenMatrix,FrozenHeat}.
+The precise source labels are listed in Appendix~\ref{app:inputs}.
+These are proof manuscripts, and their citation does not denote external
+peer review. Their fixed commit and locally recorded source hashes make
+the inputs traceable independently of the current state of the repository.
+We give the higher-derivative and switching argument that derives the
+planar estimate from these lemmas. The status of the mathematical
+review and the status of Lean formalization are separate from the
+logical dependencies of this written argument.
+
+Write $g_\sigma(t)=(2\pi\sigma)^{-1/2}e^{-t^2/(2\sigma)}$.
+For finite arrays $A_v$, with indices $v$ taken modulo $3$, use a mesh
+$h>0$, nodes $u_i=ih$, and weights
+\[
+ w_v(i)=h g_{\sigma_v}(u_i-p_v),\quad
+ W_v(i,j)=A_v(i,j)\sqrt{w_v(i)w_{v+1}(j)},\quad
+ n_v=\left(\sum_{i,j}h^2|A_v(i,j)|^3\right)^{1/3}.
+\]
+Put $R_v=[W_v\ W_{v-1}^*]$, $T_v=R_v^*R_v$, $S_v=R_vR_v^*$, and
+\[
+ \Phi(P)=\operatorname{tr}(P^{3/2}),\qquad
+ b_P(K)=\frac32\sum_{i,j}\frac{|K_{ij}|^2}{\sqrt{p_i}+\sqrt{p_j}}.
+\]
+Here the sum is taken in an eigenbasis of the positive support of $P$,
+and $K$ is Hermitian and supported there. We retain the following
+matrix inputs: joint convexity of $(P,K)\mapsto b_P(K)$ under probability
+averages with a fixed support and integrable operator norms; and
+\begin{equation}\label{eq:matrix-input}
+ |\operatorname{tr}(D_0W_0D_1W_1D_2W_2)|
+ \le\frac53\max_v\|D_v\|_{\mathrm{op}}
+       \sum_v b_{T_v}(R_v^*D_vR_v)
+\end{equation}
+for Hermitian $D_v$. We also retain the rank-change differentiation
+formula
+\[
+ \Phi(R_+^*R_+)-\Phi(R_-^*R_-)
+ =3\int_0^1\operatorname{Re}\langle R_z\sqrt{R_z^*R_z},R_+-R_-\rangle_{\mathrm{HS}}\,dz
+\]
+with $R_z=R_-+z(R_+-R_-)$, and the entry bound
+\[
+ |(R\sqrt{R^*R})_{ij}|
+ \le\|\operatorname{row}_iR\|_2\|\operatorname{col}_jR\|_2.
+\]
+
+Let $C_{v,w}$ denote the block of $R_v$ belonging to its neighbor $w$.
+Set
+\[
+ N_v=\operatorname{diag}_i\frac{u_i-p_v}{\sigma_v},\quad
+ U_v=R_v^*N_vR_v,\quad V_v=b_{T_v}(U_v),
+\]
+\[
+ P_{v,w}=C_{v,w}N_wC_{v,w}^*,\qquad
+ Y_{v,w}=b_{S_v}(P_{v,w}).
+\]
+The polarization of $b_{S_v}$ applied to the two column insertions is
+ denoted $Z_v$; in particular $2Z_v\le\sum_{w\ne v}Y_{v,w}$.
+Let $\Pi_d=\{p_0+p_1+p_2=d\}$, with any two centers as free Lebesgue
+coordinates, and $J_v(d,s)=\int_{\Pi_d}\Phi(T_v)\,d\pi_d$, where
+$\sigma_i=\alpha_i s$. The heat-flow inputs are
+\begin{align}\label{eq:heat-input}
+ 2\partial_s J_v
+ &=\Bigl(\sum_i\alpha_i\Bigr)\partial_d^2J_v
+   -\int_{\Pi_d}\Bigl(\alpha_vV_v+\sum_{w\ne v}\alpha_wY_{v,w}\Bigr),\notag\\
+ \partial_d^2J_v&=\int_{\Pi_d}Z_v.
+\end{align}
+We retain the initial bound $J_v\le C\sum_i n_i^3$ whenever all
+$\sigma_i\ge h^2$. For a single retained edge, its energy $J^e_{v,w}$
+is independent of $d$ and obeys
+\[
+ -2\partial_sJ^e_{v,w}
+ =\iint(\alpha_vV^e_{v,w}+\alpha_wY^e_{v,w})\,dp_v\,dp_w,
+ \qquad Y_{v,w}\le Y^e_{v,w}.
+\]
+For an edge with discrete $L^3$ norm $n_e$, the initial bound is
+\[
+ J^e_{v,w}(s_0)\le M n_e^3,\qquad M=1+\sqrt{2/\pi},
+\]
+provided both endpoint variances are at least $h^2$; see
+\cite[Lemmas \texttt{lem:initial-energy} and
+\texttt{lem:single-edge-energy}]{FrozenHeat}.
+The absolute factor $M$ is absorbed in $C$ in the subsequent budget.
+Gaussian domination of the needed center derivatives on compact positive
+scale intervals, and the determinant-one changes between plane charts,
+are justified by the proof of
+\cite[Lemma \texttt{lem:heat-identities}]{FrozenHeat}.
+
+\begin{statementframe}
+\begin{proposition}[Smooth kernel estimate]\label{prop:smooth}
+For bounded measurable compactly supported $F,G$ and $\kappa=E,O$,
+\begin{equation}\label{eq:smooth}
+ \|\mathcal C_m(B^\kappa(F,G))\|_{3/2}
+ \le C_\kappa\sqrt m\,\|F\|_3\|G\|_3,
+\end{equation}
+where
+\[
+ B_L^\kappa(F,G)(x,y)=\int_\R F(x+t,y)G(x,y+t)D_L\kappa(t)\,dt,
+\]
+and $\mathcal C_m$ is the pointwise supremum of sums of increments over
+at most $m$ ordered, nonoverlapping positive scale intervals. The bound
+is uniform over finite menus and output-dependent choices.
+\end{proposition}
+\end{statementframe}
+\begin{proof}
+Put $s=L^2$ and $k_{r,L}=L^r g_{s/3}^{(r)}$. The ratio
+$k_{r,L}/g_s$ is bounded uniformly in $L$, for each fixed $r$.
+Narrow the row variance at vertex $v$ to $s/6$, move its center by $d$,
+and keep its column weights fixed. Explicitly, if the base centers
+$q$ lie in $\Pi_0$, put $p_v=q_v+d$ and $p_w=q_w$ for $w\ne v$.
+Then $p\in\Pi_d$, and the map between the two planes has absolute
+Jacobian one in the two free-center coordinates. The variance vector
+for this fixed vertex is
+$\alpha^{(v)}_v=1/6$ and $\alpha^{(v)}_w=1$ for $w\ne v$.
+Denote the new Gram and score insertion by $T_v^d,U_v^d$. With $d\nu_s(d)=g_{5s/6}(d)\,dd$, Gaussian
+convolution gives
+\[
+ T_v^{\mathrm{base}}=\int T_v^d\,d\nu_s,
+ \qquad R_v^*\operatorname{diag}(k_{r,L}/g_s)R_v
+       =\int c_{r,s}(d)U_v^d\,d\nu_s,
+\]
+\[
+ c_{r,s}(d)=-\frac{L^r g_{s/6}^{(r-1)}(d)}{g_{5s/6}(d)},
+ \qquad |c_{r,s}(d)|\le C_r\sqrt s.
+\]
+All row weights are positive, so the Gram support is independent of
+$d$. In finite dimensions the relevant operator norms are integrable
+against $\nu_s$. Joint convexity and quadratic homogeneity therefore give
+\begin{equation}\label{eq:score}
+ b_{T_v^{\mathrm{base}}}\bigl(R_v^*\operatorname{diag}(k_{r,L}/g_s)R_v\bigr)
+ \le C_rs\int V_v^d\,d\nu_s.
+\end{equation}
+The signed coefficient remains in the insertion; it is not used as a
+probability density.
+
+For this narrowed vertex write $J_v^{(v)}(d,s)$ for the plane energy
+with variance vector $\alpha^{(v)}$ just specified, and define
+$\widetilde J_v=\int J_v^{(v)}(d,s)\,d\nu_s(d)$.
+Use a tilde for the corresponding averaged costs. Thus the symbol
+$J_v^{(v)}$ here does not denote the base equal-variance energy. The variance rates
+sum to $13/6$. Differentiating the averaging density adds heat rate
+$5/6$. Thus \eqref{eq:heat-input} and integration by parts give
+\[
+ 2\partial_s\widetilde J_v
+ =3\widetilde Z_v-\tfrac16\widetilde V_v-\sum_{w\ne v}\widetilde Y_{v,w},
+\]
+whence
+\begin{equation}\label{eq:averaged-energy}
+ \tfrac16\widetilde V_v
+ \le-2\partial_s\widetilde J_v+\tfrac12\sum_{w\ne v}\widetilde Y_{v,w}.
+\end{equation}
+The last terms are controlled by single-edge dissipation: their plane
+integrals do not depend on $d$, and each column rate is $1$.
+
+Now change only edge $0$, using at most $m$ nonoverlapping scale
+intervals and coefficients of modulus at most $1$ at each $(i,j)$:
+\[
+ B_0^s(i,j)=A_0(i,j)\sum_\ell\beta_\ell(i,j)
+                  \1_{\{a_\ell(i,j)^2<s<b_\ell(i,j)^2\}}.
+\]
+Then $|B_0^s|\le|A_0|$ and
+$\sum_\tau|\Delta B_0^\tau(i,j)|\le2m|A_0(i,j)|$.
+At a switch, use the original arrays to define
+\begin{align*}
+ X^2&=\sum_l|A_0(i,l)|^2w_1(l),&Y^2&=\sum_l|A_0(l,j)|^2w_0(l),\\
+ H^2&=\sum_l|A_2(l,i)|^2w_2(l),&Q^2&=\sum_l|A_1(j,l)|^2w_2(l).
+\end{align*}
+The rank-change formula and the row-column bound yield
+\[
+ |\Delta e_0|+|\Delta e_1|
+ \le C\sum_{i,j}w_0(i)w_1(j)|\Delta B_0(i,j)|(2XY+HY+QX),
+\]
+where $e_v=\Phi(T_v)$. Star $2$ does not change.
+For fixed $i,j$, use the probability measure
+\[
+ h^{-2}w_0(i)w_1(j)\,d\pi_d\,d\nu_s(d).
+\]
+Gaussian convolution gives
+\begin{align*}
+ \E w_0(l)&=h g_{2\alpha_0s}(u_l-u_i),&
+ \E w_1(l)&=h g_{2\alpha_1s}(u_l-u_j),\\
+ \E w_2(l)&=h g_{3s}(u_l+u_i+u_j).
+\end{align*}
+Gaussian averages are bounded by the discrete one-dimensional maximal
+operator, uniformly when the variances exceed the mesh scale; the
+Gaussian domination and strong $L^{3/2}$ bound are proved in
+\cite[Lemma \texttt{lem:line-maximal}]{FrozenPreliminaries}. Hence
+$\E X^2,\E Y^2,\E H^2,\E Q^2$ have scale-independent majorants whose
+square roots have discrete $L^3$ norms at most
+$Cn_0,Cn_0,Cn_2,Cn_1$, respectively. This follows by the strong
+$L^{3/2}$ maximal inequality on each slice; the index $-i-j$ is a
+bijection along the relevant slice.
+
+Cauchy--Schwarz for the center probability measure, the total entrywise
+switch bound, and discrete H\"older now give
+\[
+ \sum_\tau\sum_v|\Delta\widetilde J_v|
+ \le Cm\{n_0^3+n_0^2(n_1+n_2)\}.
+\]
+For the varying single edge the same argument costs $Cm n_0^3$.
+Fixed edges have no jumps and are not initialized anew at each switch.
+Integrating \eqref{eq:averaged-energy} between switches and telescoping
+the energies therefore yields
+\begin{equation}\label{eq:budget-candidate}
+ \int\widetilde V_v(s)\,ds
+ \le C\left[\sum_{j=0}^2 n_j^3+
+                 m\{n_0^3+n_0^2(n_1+n_2)\}\right].
+\end{equation}
+All scales lie in a fixed compact interval during this step, and the
+mesh is chosen with $h^2\le s_-/6$.
+
+For $r\ge3$, insert the three derivative windows with orders
+$(1,1,r-2)$ into \eqref{eq:matrix-input}. Apply \eqref{eq:score} and
+integrate over the center plane. Their convolution is
+\[
+ k_{1,L}*k_{1,L}*k_{r-2,L}=L^r g_s^{(r)}=D_L\varphi^{(r)}.
+\]
+Integration with $ds/s=2\,dL/L$ and \eqref{eq:budget-candidate}
+bounds the trilinear form for output-dependent sums of kernels
+\[
+ I_{a,b}^{(r)}=\int_a^b D_L\varphi^{(r)}\,\frac{dL}{L}.
+\]
+Normalize the three input norms to $(m^{-1/2},1,1)$. The bracket in
+\eqref{eq:budget-candidate} becomes
+$m^{-3/2}+2+m(m^{-3/2}+2m^{-1})\le6$.
+Restoring the original norms by trilinearity gives the bound
+$C_r\sqrt m\prod_v n_v$.
+
+Fix the actual finite scale menu before any mesh or spatial selector.
+Its finitely many positive lower endpoints have a common lower bound
+$\ell>0$. The interval-masked scale kernel is identically zero for
+$0<L\le\ell$, so removing an auxiliary lower cutoff is eventually an
+exact equality. Choose the mesh sufficiently fine relative to this fixed
+$\ell$; this threshold is uniform over all selections from the finite menu.
+There is no assertion of a common positive lower endpoint over the later
+countable collection of all menus.
+
+Fix a rectangular step choice before refining the mesh. Riemann sums then yield the corresponding continuous
+trilinear estimate. To pass to measurable choices, keep the valid
+interval lists as finitely many labels and approximate their measurable
+partition by rectangular partitions in the finite measure having density
+the sum of the absolute trilinear integrands. Every label preserves the
+switch bound. For each fixed menu all kernels are integrable; H\"older
+also gives continuity in the three $L^3$ inputs, so density extends the
+estimate to those inputs. Finite menus of rational endpoints and a
+countable dense set of phases are then increased monotonically.
+More explicitly, for a fixed finite kernel family $(K_q)$ and inputs
+$G_0,G_1,G_2\in L^3$, the approximation measure has density
+\[
+ w(a,b)=\sum_q\int_{\R}
+ |G_0(a,b)G_1(b,c)G_2(c,a)K_q(a+b+c)|\,dc.
+\]
+The substitution $t=a+b+c$ and H\"older on its two free coordinates give
+$\int w\le\sum_q\|K_q\|_1\prod_v\|G_v\|_3<\infty$.
+The order is therefore: the fixed finite menu and lower-cutoff removal,
+the grid limit for rectangle selectors, approximation of the measurable
+selector in $w\,da\,db$, $L^3$ input density, and finally directed finite
+maxima increasing to the countable supremum inside the integral.
+Approximation constants may depend on the fixed kernel family; the final
+sharp estimate is independent of it. For the qualitative natural-average
+theorem it suffices to use positive natural chains and the four phases
+$1,-1,i,-i$, at a fixed harmless factor in the bound. No limit to arbitrary
+phases or uncountable endpoints is needed for that formal route.
+
+Finally, direct differentiation gives
+\[
+ \partial_{\log L}D_LE=-D_L\varphi^{(4)},\qquad
+ \partial_{\log L}D_LO=D_L(\varphi^{(5)}+3\varphi^{(3)}).
+\]
+Use the estimates of orders $3,4,5$, linearize each absolute increment
+by a complex phase, and use $L^{3/2}$--$L^3$ duality. The substitution
+$x=-a,y=-b,t=a+b+c$ identifies the triangular form with $B_L^\kappa$
+and preserves the input norms. This proves \eqref{eq:smooth} from the
+stated finite-matrix and heat-flow lemmas.
+\end{proof}
+
+\begin{statementframe}
+\begin{lemma}\label{lem:smooth-to-H}
+The smooth estimate \eqref{eq:smooth} implies the planar estimate
+\eqref{eq:H} with $C_m=C_\kappa C_fC_g\sqrt m$ for
+$K=D_r\kappa$, $\kappa=E,O$.
+\end{lemma}
+\end{statementframe}
+\begin{proof}
+For every $N$, changing variables gives
+$\A_N^{D_r\kappa}(F,G)=B_{rN}^\kappa(F,G)$.
+Every finite chain maximum is bounded by $\mathcal C_m(B^\kappa)$.
+If $F,G$ vanish outside $Q_L$, these averages vanish outside $Q_L$:
+$F(u+t,v)$ forces $|v|\le L$, and $G(u,v+t)$ forces $|u|\le L$.
+H\"older therefore gives
+\begin{align*}
+ \int_{\R^2}M_\F(\A^{D_r\kappa})
+ &\le |Q_L|^{1/3}\|\mathcal C_m(B^\kappa)\|_{3/2}\\
+ &\le |Q_L|^{1/3}C_\kappa\sqrt m\|F\|_3\|G\|_3
+ \le |Q_L|C_\kappa C_fC_g\sqrt m.
+\end{align*}
+The constants do not depend on the finite family or on $L$.
+Since $\sqrt m/m\to0$, the constants have the required sublinear growth.
+\end{proof}
+
+\section{A convergence criterion and spatial transference}
+
+\begin{statementframe}
+\begin{lemma}\label{lem:jump}
+Let $(Y,\nu)$ be a probability space and $a_N:Y\to\C$ measurable. Suppose
+that $\int_Y M_{\F}(a)\,d\nu\le C_m$ for every finite family of
+$m$-chains, where $C_m<\infty$ and $C_m/m\to0$. Then $a_N$ converges
+almost everywhere.
+\end{lemma}
+\end{statementframe}
+\begin{proof}
+The set of $m$-chains is countable. Enumerating it and applying monotone
+convergence to finite maxima gives
+\[
+ J_m(y):=\sup_{\boldsymbol n}V_{\boldsymbol n}(a(y)),\qquad
+ \int_Y J_m\,d\nu\le C_m.
+\]
+If a sequence is not Cauchy, there is $\eta>0$ such that arbitrarily far
+out two terms have distance at least $2\eta$. From any chosen term, at
+least one of these two later terms has distance at least $\eta$.
+Induction therefore constructs chains of every length with all successive
+increments at least $\eta$. Thus $J_m\ge m\eta$ for every $m$.
+For each fixed rational $\eta>0$, Markov's inequality gives
+\[
+ \nu\left(\bigcap_{m\ge1}\{J_m\ge m\eta\}\right)
+ \le \inf_{m\ge1}\frac{C_m}{m\eta}=0.
+\]
+Taking a countable union in $\eta$ proves the Cauchy property almost
+everywhere. Completeness of $\C$ gives convergence.
+\end{proof}
+
+Let $U_t,V_t$ be commuting, jointly measurable, measure-preserving
+$\R$-actions on a probability space $(Y,\nu)$. For bounded measurable
+$f,g:Y\to\C$, put
+\begin{equation}\label{eq:flowaverage}
+ a_N^K(y)=\int_\R K(t)f(U_{Nt}y)g(V_{Nt}y)\,dt.
+\end{equation}
+The integral is absolutely convergent and defines a measurable function.
+
+\begin{statementframe}
+\begin{proposition}\label{prop:transfer}
+Fix $K\in L^1(\R)$ and bounds $|f|\le C_f$, $|g|\le C_g$.
+If \eqref{eq:H} holds for this kernel, these bounds, and a fixed $m$
+with constant $C_m$, then
+\[
+ \int_Y M_{\F}\bigl((a_N^K(y))_{N\ge1}\bigr)\,d\nu(y)\le C_m
+\]
+for every finite nonempty family $\F$ of $m$-chains.
+\end{proposition}
+\end{statementframe}
+\begin{proof}
+Let $B$ be the largest endpoint in $\F$. For $y\in Y$ define
+\[
+ F_y(u,v)=f(U_uV_vy),\qquad G_y(u,v)=g(U_uV_vy).
+\]
+Commutativity gives the exact identity
+\[
+ \A_N^K(F_y,G_y)(p)=a_N^K(U_{p_1}V_{p_2}y).
+\]
+Fix $R,L>0$ and replace $F_y,G_y$ by their restrictions to $Q_{L+BR}$,
+extended by zero. Denote the resulting functions by $F'_y,G'_y$.
+For $p\in Q_L$, $N\le B$, and $|t|\le R$, both shifted points in the
+integrand remain in $Q_{L+BR}$. Consequently
+\[
+ |\A_N^K(F_y,G_y)(p)-\A_N^K(F'_y,G'_y)(p)|
+ \le \varepsilon_R,
+ \qquad \varepsilon_R=2C_fC_g\int_{|t|>R}|K(t)|\,dt.
+\]
+Each chain sum changes by at most $2m\varepsilon_R$. The same bound
+holds for the finite maximum, independently of the size of $\F$.
+Applying \eqref{eq:H} to $F'_y,G'_y$ yields
+\[
+ \int_{Q_L}M_{\F}\bigl(a^K(U_{p_1}V_{p_2}y)\bigr)\,dp
+ \le |Q_{L+BR}|C_m+2m\varepsilon_R|Q_L|.
+\]
+Integrate in $y$. Tonelli's theorem and measure preservation identify
+the left side with $|Q_L|\int_Y M_{\F}(a^K)\,d\nu$. Division by
+$|Q_L|>0$ gives
+\[
+ \int_Y M_{\F}(a^K)\,d\nu
+ \le \left(1+\frac{BR}{L}\right)^2C_m+2m\varepsilon_R.
+\]
+First let $L\to\infty$ with $R$ fixed, then let $R\to\infty$.
+Integrability of $K$ proves the claim.
+\end{proof}
+
+\begin{statementframe}
+\begin{corollary}\label{cor:euler}
+The averages \eqref{eq:flowaverage} converge almost everywhere
+for each $K=D_rE,D_rO$, $r>0$, and bounded measurable $f,g$.
+\end{corollary}
+\end{statementframe}
+\begin{proof}
+Proposition~\ref{prop:planar} supplies the finite maximal estimate.
+Apply Proposition~\ref{prop:transfer} for every $m$, followed by
+Lemma~\ref{lem:jump}.
+\end{proof}
+
+\section{Passage from Gaussian kernels to the interval kernel}
+
+\begin{statementframe}
+\begin{lemma}\label{lem:closure}
+Let $H_N(y,t)$ be measurable complex-valued functions on $Y\times\R$
+with $|H_N(y,t)|\le M$ for every $N,y,t$. The real kernels $K\in L^1(\R)$
+for which $\int_\R K(t)H_N(y,t)\,dt$ converges for almost every $y$
+form a closed linear subspace $\mathcal C$ of $L^1(\R;\R)$.
+\end{lemma}
+\end{statementframe}
+\begin{proof}
+Linearity follows by intersecting finitely many sets of full measure.
+Suppose $K_j\in\mathcal C$ and $\norm{K_j-K}_1\to0$. Intersect the
+countably many sets of convergence for $K_j$. At any remaining point,
+\[
+ \sup_N\left|\int_\R(K-K_j)(t)H_N(y,t)\,dt\right|
+ \le M\norm{K-K_j}_1.
+\]
+The Cauchy criterion, first in $N$ and then in $j$, proves convergence
+for $K$. This proves closedness.
+\end{proof}
+
+\begin{statementframe}
+\begin{lemma}\label{lem:gaussian}
+If a closed linear subspace $\mathcal C\subset L^1(\R;\R)$ contains
+$D_rE$ and $D_rO$ for every $r>0$, it contains $t^de^{-at^2}$ for
+every integer $d\ge0$ and every $a>0$.
+\end{lemma}
+\end{statementframe}
+\begin{proof}
+For $k=0,1$ put
+\[
+ E_{k,a}(t)=(3-2at^2)t^ke^{-at^2},\qquad G_{k,a}(t)=t^ke^{-at^2}.
+\]
+Each $E_{k,a}$ is a constant multiple of a positive dilation of $E$ or
+$O$, hence lies in $\mathcal C$. The map $s\mapsto E_{k,a}(s\,\cdot)$
+is continuous in $L^1$ on every compact subinterval of $(0,\infty)$:
+on $[\delta,1]$ a common integrable bound is a constant times
+$(|t|^k+|t|^{k+2})e^{-a\delta^2t^2}$, so dominated convergence applies.
+For $0<\delta<1$, integration of the derivative of
+$s^3t^ke^{-as^2t^2}$ gives
+\begin{equation}\label{eq:euler}
+ \int_\delta^1s^{2-k}E_{k,a}(st)\,ds
+ =G_{k,a}(t)-\delta^3t^ke^{-a\delta^2t^2}.
+\end{equation}
+The left side is an $L^1$ limit of Riemann sums of elements of
+$\mathcal C$. Here
+$E_{k,a}(st)=s^kE_{k,as^2}(t)$, so every summand belongs to
+$\mathcal C$. The remainder satisfies the exact identity
+\[
+ \norm{\delta^3t^ke^{-a\delta^2t^2}}_1
+ =\delta^{2-k}\norm{G_{k,a}}_1\longrightarrow0.
+\]
+It follows that $G_{0,a},G_{1,a}\in\mathcal C$ for every $a>0$.
+
+For $h>0$ and an integer $j\ge0$, consider
+\[
+ t^ke^{-at^2}\left(\frac{1-e^{-ht^2}}{h}\right)^j
+ =h^{-j}\sum_{\ell=0}^j(-1)^\ell\binom j\ell
+      t^ke^{-(a+\ell h)t^2}.
+\]
+The right side lies in $\mathcal C$. Since
+$0\le(1-e^{-ht^2})/h\le t^2$ and this quotient tends to $t^2$,
+dominated convergence, with bound $|t|^{k+2j}e^{-at^2}$, gives the
+$L^1$ limit $t^{k+2j}e^{-at^2}$. Every nonnegative degree is of the
+form $k+2j$ with $k=0$ or $1$.
+\end{proof}
+
+\begin{statementframe}
+\begin{lemma}\label{lem:density}
+The function $\chi=\1_{(0,1)}$ is an $L^1(\R)$ limit of functions
+$P(t)\varphi(t)$ with $P$ a real polynomial.
+\end{lemma}
+\end{statementframe}
+\begin{proof}
+Let $d\gamma(t)=\varphi(t)\,dt$. We first show that real polynomials
+are dense in $L^2(\gamma;\R)$. If $h$ is orthogonal to all polynomials,
+the function
+\[
+ F(z)=\int_\R h(t)e^{zt}\,d\gamma(t),\qquad z\in\C,
+\]
+is entire. Indeed, on every bounded set of $z$ its integrand and all
+its derivatives are dominated by integrable functions, by
+Cauchy--Schwarz and the Gaussian exponential moments. All derivatives
+of $F$ at zero vanish by orthogonality, so $F$ is identically zero.
+In particular the Fourier transform of the finite signed measure
+$h\,d\gamma$ vanishes. Uniqueness of the Fourier transform for finite
+measures gives $h=0$ almost everywhere. The orthogonal-complement
+criterion proves density.
+
+Now $\chi/\varphi\in L^2(\gamma)$, since
+\[
+ \int_\R\left|\frac{\chi}{\varphi}\right|^2\,d\gamma
+ =\int_0^1\frac{dt}{\varphi(t)}<\infty.
+\]
+Choose polynomials $P_j\to\chi/\varphi$ in $L^2(\gamma)$. As
+$\gamma(\R)=1$, Cauchy--Schwarz gives
+\[
+ \norm{P_j\varphi-\chi}_{L^1(dt)}
+ \le\norm{P_j-\chi/\varphi}_{L^2(\gamma)}\longrightarrow0.
+\]
+\end{proof}
+
+\begin{statementframe}
+\begin{proposition}\label{prop:interval}
+If \eqref{eq:flowaverage} converges almost everywhere for each positive
+dilation of $E$ and $O$, then
+\[
+ \frac1N\int_0^N f(U_ty)g(V_ty)\,dt
+\]
+converges almost everywhere for bounded measurable $f,g$.
+\end{proposition}
+\end{statementframe}
+\begin{proof}
+Apply Lemma~\ref{lem:closure} to $H_N(y,t)=f(U_{Nt}y)g(V_{Nt}y)$.
+Its closed subspace contains all the Euler dilations by hypothesis,
+all polynomial Gaussian kernels by Lemma~\ref{lem:gaussian}, and
+then $\chi$ by Lemma~\ref{lem:density}. Finally, the change of variables
+$s=Nt$ identifies the pairing with $\chi$ with the displayed time
+average. Only countably many kernels are used in each limiting
+argument, so no uncountable intersection of sets of full measure is
+required.
+\end{proof}
+
+\section{Suspension and exact reconstruction}
+
+\begin{statementframe}
+\begin{lemma}\label{lem:suspension}
+On $Y=X\times[0,1)^2$ with $\nu=\mu\otimes du\otimes dv$, the maps
+\begin{align*}
+ U_t(x,u,v)&=(T^{\lfloor u+t\rfloor}x,\{u+t\},v),\\
+ V_t(x,u,v)&=(S^{\lfloor v+t\rfloor}x,u,\{v+t\})
+\end{align*}
+define commuting, jointly measurable, measure-preserving $\R$-actions.
+Here integer powers use the inverse transformations at negative times.
+\end{lemma}
+\end{statementframe}
+\begin{proof}
+The floor identity
+\[
+ \lfloor u+s+t\rfloor
+ =\lfloor u+s\rfloor+\lfloor\{u+s\}+t\rfloor
+\]
+gives the group law for $U$, and the same argument gives it for $V$.
+The two maps act on different phase coordinates, and their actions on
+$X$ commute because all integer powers of $T$ and $S$ commute.
+Joint measurability follows by partitioning the time-phase plane into
+the countably many measurable sets where its floor is a fixed integer.
+
+For fixed $t$, write $t=q+a$ with $q\in\mathbb Z$ and $0\le a<1$.
+Partition the $u$-interval into $[0,1-a)$ and $[1-a,1)$. On these two
+pieces $U_t$ applies respectively $T^q$ and $T^{q+1}$ to $x$ and
+translates $u$ onto $[a,1)$ and $[0,a)$. Invariance of $\mu$ and
+translation invariance of Lebesgue measure prove preservation of the
+product measure. The proof for $V_t$ is identical.
+\end{proof}
+
+Lift $f,g$ to $Y$ by ignoring the phase coordinates. Their interval-kernel
+average is
+\[
+ B_N(x,u,v)=\frac1N\int_0^N
+ f(T^{\lfloor t+u\rfloor}x)g(S^{\lfloor t+v\rfloor}x)\,dt.
+\]
+
+\begin{statementframe}
+\begin{lemma}\label{lem:phase}
+Let $w(u,v)=3-6|u-v|$. For every bounded $f,g$, every $x$, and $N\ge1$,
+\begin{equation}\label{eq:phase}
+\begin{split}
+ &\int_0^1\!\int_0^1 w(u,v)B_N(x,u,v)\,dv\,du\\
+ &\qquad=A_N(f,g)(x)+\frac{f(T^Nx)g(S^Nx)-f(x)g(x)}{2N}.
+\end{split}
+\end{equation}
+\end{lemma}
+\end{statementframe}
+\begin{proof}
+For fixed $n$, abbreviate
+\begin{align*}
+ a&=f(T^nx)g(S^nx),& b&=f(T^{n+1}x)g(S^nx),\\
+ c&=f(T^nx)g(S^{n+1}x),& d&=f(T^{n+1}x)g(S^{n+1}x).
+\end{align*}
+Splitting the time interval $[n,n+1]$ at $n+1-u$ and $n+1-v$ gives
+the cell integral
+\[
+ (1-\max(u,v))a+(u-v)_+b+(v-u)_+c+\min(u,v)d.
+\]
+The weighted square integrals of the four coefficients are
+\begin{align*}
+ \int_{[0,1]^2}w(1-\max(u,v))&=\tfrac12,&
+ \int_{[0,1]^2}w(u-v)_+&=0,\\
+ \int_{[0,1]^2}w(v-u)_+&=0,&
+ \int_{[0,1]^2}w\min(u,v)&=\tfrac12.
+\end{align*}
+For example, on $u\ge v$ use $q=u-v$; the second integral is
+$\int_0^1(3-6q)q(1-q)\,dq=0$. The first is
+$\int_0^1(3-6q)(1-q)^2\,dq=1/2$, after adding the two triangles.
+Symmetry proves the other two identities. Thus each cell contributes
+$(a+d)/2$. Summing in $n=0,\ldots,N-1$ and dividing by $N$ telescopes
+to \eqref{eq:phase}.
+\end{proof}
+
+\begin{statementframe}
+\begin{proposition}\label{prop:bounded}
+The averages $A_N(f,g)$ converge almost everywhere whenever
+$f,g\in L^\infty(\mu)$.
+\end{proposition}
+\end{statementframe}
+\begin{proof}
+Use bounded measurable representatives. Apply
+Corollary~\ref{cor:euler} and Proposition~\ref{prop:interval} to the
+actions of Lemma~\ref{lem:suspension}. This proves convergence of
+$B_N$ for $\nu$-almost every $(x,u,v)$. By Fubini, for almost every
+$x$ the convergence holds for almost every phase pair. Since
+\[
+ |B_N(x,u,v)|\le\norm f_\infty\norm g_\infty,
+ \qquad |w(u,v)|\le3,
+\]
+dominated convergence gives convergence of the left side of
+\eqref{eq:phase} for such $x$. The boundary term on its right side is
+bounded in modulus by $\norm f_\infty\norm g_\infty/N$ and tends to
+zero. Hence $A_N(f,g)(x)$ converges. The argument integrates over the
+whole phase square and does not restrict a product null set to a
+diagonal.
+\end{proof}
+
+\section{Extension to square-integrable functions}
+
+\begin{statementframe}
+\begin{proposition}\label{prop:l2}
+Fix two measure-preserving transformations $T,S$ on a probability space.
+If $A_N(u,v)$ converges almost everywhere for every pair of bounded
+measurable functions $u,v$, then it converges almost everywhere for
+every $f,g\in L^2(\mu)$.
+\end{proposition}
+\end{statementframe}
+\begin{proof}
+Write $f_M=f\1_{\{|f|\le M\}}$ and $g_M=g\1_{\{|g|\le M\}}$, with
+$M$ a positive integer, and set
+\[
+ P_N^Th(x)=\frac1N\sum_{n=0}^{N-1}h(T^nx).
+\]
+Cauchy--Schwarz in the finite sum gives
+\begin{align}\label{eq:tail}
+ |A_N(f,g)-A_N(f_M,g_M)|
+ &\le \bigl(P_N^T|f-f_M|^2\bigr)^{1/2}
+          \bigl(P_N^S|g|^2\bigr)^{1/2}\notag\\
+ &\quad+\bigl(P_N^T|f|^2\bigr)^{1/2}
+          \bigl(P_N^S|g-g_M|^2\bigr)^{1/2}.
+\end{align}
+Let $\mathcal I_T,\mathcal I_S$ be the invariant sigma-algebras and put
+\[
+ F_M=\E(|f-f_M|^2\mid\mathcal I_T),\quad
+ G_M=\E(|g-g_M|^2\mid\mathcal I_S),
+\]
+\[
+ F=\E(|f|^2\mid\mathcal I_T),\qquad
+ G=\E(|g|^2\mid\mathcal I_S).
+\]
+The pointwise ergodic theorem identifies the four limits in
+\eqref{eq:tail} with $F_M,G,F,G_M$, respectively. These statements
+hold simultaneously outside a null set, since the family of truncation
+levels is countable. The functions $F,G$ are finite almost everywhere.
+
+The tail integrals tend to zero, so
+$\norm{F_M}_1+\norm{G_M}_1\to0$. Choose a strictly increasing sequence
+$M_j$ for which this sum is at most $2^{-j}$. Tonelli's theorem gives
+$\sum_j(F_{M_j}+G_{M_j})<\infty$ almost everywhere, and hence both
+$F_{M_j}$ and $G_{M_j}$ tend to zero there. By \eqref{eq:tail},
+\[
+ \limsup_{N\to\infty}|A_N(f,g)-A_N(f_{M_j},g_{M_j})|
+ \le F_{M_j}^{1/2}G^{1/2}+F^{1/2}G_{M_j}^{1/2}
+ \longrightarrow0.
+\]
+Each truncated average converges by assumption. Its asymptotic
+oscillation is therefore zero. The triangle inequality bounds the
+asymptotic oscillation of $A_N(f,g)$ by twice the displayed error for
+every $j$. Letting $j\to\infty$ proves the Cauchy property and therefore
+convergence almost everywhere.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Proposition~\ref{prop:bounded}, using the planar estimate proved in
+Proposition~\ref{prop:planar}, gives convergence for bounded inputs.
+Proposition~\ref{prop:l2} extends it to
+$L^2\times L^2$. On a probability space, $L^\infty$ and $L^3$ are
+contained in $L^2$, which proves all the stated conclusions.
+\end{proof}
+
+
+\appendix
+\section{Traceable matrix and heat inputs}\label{app:inputs}
+All nonstandard matrix and heat inputs are taken from the source of
+\cite{FrozenMatrix,FrozenHeat,FrozenPreliminaries}, frozen at commit
+\texttt{adc7f1241b42e322a6451854ab7e4b4c146bf78a}.
+The accompanying artifact records the SHA256 hashes in
+\texttt{research/public-proof/receipt.json}; the saved source files
+remain unmodified. The following identifiers are literal source labels,
+so a reader can locate the proofs without relying on changing theorem
+numbers.
+\begin{description}
+\item[Matrix:] \path{lem:hessian}, \path{lem:order},
+\path{lem:joint-convexity}, \path{lem:rank-change}, and
+\path{lem:mixed-trace}. These supply the supported Hessian, cost
+order and probability averaging, rank-change integral, and Hermitian
+mixed cyclic trace estimate used here.
+\item[Heat:] \texttt{lem:heat-identities},
+\texttt{lem:initial-energy}, and \texttt{lem:single-edge-energy}.
+These include the integrated plane-chart identities, local integrable
+Gaussian domination, and the factor $M=1+\sqrt{2/\pi}$ in the initial
+single-edge bound.
+\item[Maximal averages:] \texttt{lem:line-maximal} in the
+preliminaries supplies the strong $L^{3/2}$ estimate and discrete
+Gaussian domination whenever the variance is at least $h^2$.
+\end{description}
+
+\section{Formal statement and scope}\label{app:formal}
+The accompanying Lean project is pinned to Lean 4.33.1 and to the following
+Mathlib commit:
+\begin{quote}
+\texttt{0df444a360eaa60ab8c11dca51a86af692955474}.
+\end{quote}
+The qualitative theorem for arbitrary probability spaces, commuting
+invertible bimeasurable measure-preserving maps, and complex $L^2$
+inputs is \path{commuting_pointwise_l2} in
+\texttt{UnconditionalConvergence.lean}. It assumes no ergodicity and
+no unproved analytic target. The analytic input is internally supplied
+by \path{eulerCompactPlaneTarget_proved}.
+
+The file \texttt{SubmissionStatements.lean} also provides
+\path{commuting_measurable_inverses_l2_convergence}.
+It directly quantifies the maps and their measurable left and right
+inverses, and concludes that the sums over $n=0,\ldots,N-1$ and
+$n=1,\ldots,N$ converge to the same complex limit almost everywhere.
+Real-valued $L^2$, $L^3$, and $L^\infty$ forms have real limits.
+The theorem \path{ae_same_average_limits_of_representatives}
+supplies one full-measure set on which changing representatives leaves
+every average, and hence every candidate limit, unchanged.
+
+The iteration-70 project audit covers 2095 public theorem and lemma
+declarations, with only \texttt{propext}, \texttt{Classical.choice},
+and \texttt{Quot.sound}. This audit is an incremental compilation with
+source-hash matching and a fresh full axiom check. It is distinct from
+the separate fresh compilation of all required dependency sources.
+The formalized planar input is the actual finite maximum over positive
+natural chains inside the spatial integral, sufficient for
+Theorem~\ref{thm:main}. The artifact does not label every quantitative
+all-real-scale assertion in this manuscript as independently formalized.
+Mathematical peer review, independent dependency rebuilding, and
+publication are separate statuses.
+
+\begin{thebibliography}{9}
+\bibitem{FrozenMatrix}
+OpenAI, \emph{Annular variation of the triangular Hilbert transform at
+the symmetric point}, October 5, 2026, dimension-free matrix
+inequalities, frozen source:
+\href{https://github.com/openai/math/blob/adc7f1241b42e322a6451854ab7e4b4c146bf78a/preprints/Annular-variation-of-the-triangular-Hilbert-transform-at-the-symmetric-point-October-5-2026/build/sections/matrix.tex}{\texttt{matrix.tex}}.
+\bibitem{FrozenHeat}
+OpenAI, same manuscript and commit, Gaussian heat dissipation:
+\href{https://github.com/openai/math/blob/adc7f1241b42e322a6451854ab7e4b4c146bf78a/preprints/Annular-variation-of-the-triangular-Hilbert-transform-at-the-symmetric-point-October-5-2026/build/sections/heat.tex}{\texttt{heat.tex}}.
+\bibitem{FrozenPreliminaries}
+OpenAI, same manuscript and commit, truncations, coordinates, and
+maximal averages:
+\href{https://github.com/openai/math/blob/adc7f1241b42e322a6451854ab7e4b4c146bf78a/preprints/Annular-variation-of-the-triangular-Hilbert-transform-at-the-symmetric-point-October-5-2026/build/sections/preliminaries.tex}{\texttt{preliminaries.tex}}.
+\end{thebibliography}
+
+\end{document}

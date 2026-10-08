@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "exit_code": 0,
+  "completed_at_utc": "2026-10-08T12:22:25.521513+00:00",
+  "toolchain": "leanprover/lean4:v4.35.0-rc4",
+  "mathlib_revision": "021ce68bf125a049beee22b3fc7664d78728e21d",
+  "source_sha256": "e5ace33baee54df65edcf05da142bf59ae9e39f7542dcecc0a61ed8cc57f3a5f",
+  "source_modules": 327,
+  "compatibility_modules": 22,
+  "seconds": 157.721266583,
+  "axiom_reports": {
+    "CommutingConvergence.commutingPointwiseConvergence": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "CommutingConvergence.commutingPointwiseConvergenceL2": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "expected_axiom_reports": [
+    "CommutingConvergence.commutingPointwiseConvergence",
+    "CommutingConvergence.commutingPointwiseConvergenceL2"
+  ],
+  "allowed_axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "independent_dependency_source_rebuild": false,
+  "hosted_browser_execution_verified": false,
+  "output_sha256": "9e4a03b80b9eb79cc672be4e964d8346144aa5ec5a5d02409bacfd33ab9d0585",
+  "original_compilation_log_sha256": "3f63ca2c16385549469ae4023abfb083f3f8578b7f53ad7d25a7f02a8d0719eb",
+  "source_unchanged_since_verified_compilation": true
+}
